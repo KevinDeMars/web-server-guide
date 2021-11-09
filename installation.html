@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css" />
+    <title>Document</title>
+</head>
+<body>
+    <div id="container">
+        <h1>Installation</h1>
+        <p>Apache by itself does not provide an installable version of the websever (a.k.a. "binaries" or "distribution"). Apache lists <a href="http://httpd.apache.org/docs/2.4/platform/windows.html">several</a> third-party distributions:</p>
+        <ul>
+            <li><a href="http://www.apachehaus.com/cgi-bin/download.plx">ApacheHaus</a></li>
+            <li><a href="http://www.apachelounge.com/download/">Apache Lounge</a></li>
+            <li><a href="http://bitnami.com/stack/wamp">Bitnami WAMP Stack</a></li>
+            <li><a href="http://www.wampserver.com/">WampServer</a></li>
+            <li><a href="http://www.apachefriends.org/en/xampp.html">XAMPP</a></li>
+        </ul>
+    
+        <p>For this guide, I chose the distribution from Apache Lounge, because it is simple and includes Apache and nothing else.</p>
+    
+        <h2>Prerequisites</h2>
+        <ol>
+            <li><p>Determine whether your computer has a 64-bit or 32-bit architecture by following <a href="https://support.microsoft.com/en-us/windows/32-bit-and-64-bit-windows-frequently-asked-questions-c6ca9541-8dce-4d48-0415-94a3faa2e13d">this procedure.</a>
+                Most modern computers are 64-bit computers.</p>
+                <a href="img/cpu-arch.png"><img src="img/cpu-arch.png" /></a>
+                <p>Note that some programs will call the 32-bit version "x86".</p>
+            </li>
+            <li>Install "Visual C++ Redistributable for Visual Studio 2015-2019".
+                The 64-bit version is available <a href="https://aka.ms/vs/16/release/VC_redist.x64.exe">here.</a>
+                The 32-bit version is available <a href="https://aka.ms/vs/16/release/VC_redist.x86.exe">here.</a>
+            </li>
+        </ol>
+    
+        <h2>Installation</h2>
+        <h3>"Bare Essentials" Server</h3>
+        <ol>
+            
+            <li>Go to the <a href="http://www.apachelounge.com/download/">Apache Lounge download page</a></li>
+            <li>Download the current version, which as of Nov 2021 is either "httpd-2.4.51-win64-VS16.zip" or "httpd-2.4.51-win32-VS16.zip". If your computer is 64-bit, download the one with "win64"; otherwise, download the one with "win32".</li>
+            <li>Extract the ".zip" file by right-clicking and choosing "Extract All...".</li>
+            <li>The resulting folder will contain a folder called "Apache24". Move it directly to the top level of the C drive, so that the path to the folder is "C:\Apache24".<br>
+            It is possible to put it somewhere else, but it will take extra configuration.</li>
+            <li>Test that the server works:
+                <ol>
+                    <li>Open the Command Prompt as Administrator:
+                        <ol>
+                            <li>Press the Windows key and search for "cmd.exe".</li>
+                            <li>Right-click it, and select Run as Administrator.</li>
+                        </ol>
+                    </li>
+                    <li>Navigate to the folder containing the server by entering "cd C:\Apache24\bin". (cd stands for "change directory".)</li>
+                    <li>Run the server by entering "httpd.exe". You may see a warning like in the picture below; ignore it for now.
+                        <a href="img/test-server.png"><img src="img/test-server.png" /></a>
+                    </li>
+                    <li>While leaving the Command Prompt open, open your web browser.</li>
+                    <li>In the address bar, enter "http://localhost". You should see a mostly-empty page with the words "It works!"</li>
+                    <li>On the Command Prompt, shut down the server by pressing Ctrl-C.</li>
+                </ol>
+                
+            </li>
+        </ol>
+
+        <h3>Install as Windows service</h3>
+        <p>This step makes the server run as a Windows service, so you don't have to use the command prompt to start up the server.</p>
+        <ol>
+            <li>As above, open the command prompt and navigate to "C:\Apache24\bin".</li>
+            <li>Enter this command: <pre>httpd.exe -k install -n "Apache HTTP Server"</pre>
+                This installs the service and gives it a name.</li>
+            <li>Open your Services application (press Windows; search for "Services").</li>
+            <li>There should be an entry with the same name as above. You can start and stop the server through the right-click menu.
+                You can also set it to automatically start when Windows starts ("Automatic") or not ("Manual").
+            </li>
+        </ol>
+
+		<table class="bottom-links">
+			<tr>
+				<td><a href="intro.html">Previous: Introduction</a></td>
+                <td><a href="index.html">Index</a></td>
+				<td><a href="configuration.html">Next: Configuration</a></td>
+			</tr>
+		</table>
+    </div>
+</body>
+</html>

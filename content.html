@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Introduction</title>
+	<link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+	<div id="container">
+		<h1>Putting Content on the Server</h1>
+
+        <h2>Static files</h2>
+        <p>Although the main purpose of a web server is to host web pages, you can host any kind of file. Since the files sent by the server will be the same every
+            time, this is called static file hosting.
+        </p>
+        <p>To share a file, simply place it inside the "htdocs" folder (or a subfolder within it). You can share images, text, or any other arbitrary binary file.</p>
+        <h3>Procedure</h3>
+        <ol>
+            <li>Create a text file called "my-message.txt" with a message of your choice.</li>
+            <li>Save it inside your "htdocs" folder.</li>
+        </ol>
+
+        <h2>HTML editing</h2>
+        <p>To host a web page, the simplest way is to write a .html file and put it in the "htdocs" folder. Your web browser is smart enough to render the
+            HTML as a fancy-looking web page rather than a bunch of text with tags.
+        </p>
+        <p>What does a .html file look like? It is mostly plain text, but there are tags -- identified by angle brackets -- around the text that specify how to interpret the text (e.g. "this part is a header"). Tags can be
+            nested inside each other. A piece of text is surrounded with an opening tag (&lt;p&gt;) and a matching closing tag (&lt;/p&gt;)
+        </p>
+        <p>A page has two parts, a header and a body. For the purpose of this guide, the header is just for specifying the page title or embedding scripts and stylesheets. The main content is in the body.</p>
+
+        <h3>Procedure</h3>
+        <p>Create a file in your "htdocs" folder called "my-page.html" with the following contents:</p>
+        <pre>
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;title&gt;My Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Hello!&lt;/h1&gt;
+    &lt;p&gt;This is a page that demonstrates the basics of HTML editing:&lt;/p&gt;
+
+    &lt;ul&gt;
+        &lt;li&gt;Page layout (head and body)&lt;/li&gt;
+        &lt;li&gt;Header tags (h1)&lt;/li&gt;
+        &lt;li&gt;Paragraph tags (p)&lt;/li&gt;
+        &lt;li&gt;Bulleted lists (ul for &quot;unordered list&quot;, li for &quot;list item&quot;)&lt;/li&gt;
+        &lt;li&gt;Hyperlinks (a for &quot;anchor&quot;)&lt;/li&gt;
+        &lt;li&gt;Images&lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;p&gt;Click &lt;a href=&quot;my-message.txt&quot;&gt;here&lt;/a&gt; for a cool message.&lt;/p&gt;
+
+    &lt;p&gt;Here is a cool picture:&lt;/p&gt;
+    &lt;img src=&quot;my-picture.png&quot; /&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        </pre>
+        <p>This page includes an example of adding a large header, adding a bulleted list, adding a link to another page, and adding an image.</p>
+        <p>The header is specified as &lt;h1&gt; because there are multiple levels of headers and we want the largest one, a level-1 header.</p>
+        <p>To make the image work, include an image in the same folder that you saved the HTML file to called "my-picture.png". The &lt;img /&gt; tag is special because it
+             is a self-closing tag. You don't need a &lt;/img&gt; after it.</p>
+
+        <p>Now, you should be able to see the page by going to localhost/my-page.html. Go <a href="example/example-page.html">here</a> to see what it should look like.</p>
+
+        <p>Go <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element">here</a> for a reference on the different tags you can use.</p>
+
+        <h2>CSS editing</h2>
+        <p>The page you created in the last step looks quite plain. Luckily, we can make it fancy by adding some CSS declarations. CSS stands for Cascading Stylesheet and is used
+            to specify how the things on the page should look.
+        </p>
+        <p>A .css file is a list of declarations that specify what things they apply to, and what styles should apply to those things. For example, the following says to
+            make all level-1 headers bold and underlined:
+        </p>
+
+        <pre>
+h1 {
+    font-weight: bold;
+    text-decoration: underline;
+}
+        </pre>
+        <p>Instead of saying "h1 {", we could say to apply these styles to anything with the ID of "myId" by writing "#myId {", or anything with the class "myClass" with ".myClass {". We can also 
+            specify more complicated things like "a paragraph directly contained in something with the ID of myId" by writing "#myId p {".
+        </p>
+
+        <p>Let's apply some styling to the above page by adding some colors and a rounded container around the content (to make the page look like this one).</p>
+
+        <h3>Procedure</h3>
+        <ol>
+            <li>Change "my-page.html" to the following:
+                <pre>
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;title&gt;My Page&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;my-stylesheet.css&quot; /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id=&quot;container&quot;&gt;
+        &lt;h1&gt;Hello!&lt;/h1&gt;
+        &lt;p&gt;This is a page that demonstrates the basics of HTML editing:&lt;/p&gt;
+    
+        &lt;ul&gt;
+            &lt;li&gt;Page layout (head and body)&lt;/li&gt;
+            &lt;li&gt;Header tags (h1)&lt;/li&gt;
+            &lt;li&gt;Paragraph tags (p)&lt;/li&gt;
+            &lt;li&gt;Bulleted lists (ul for &quot;unordered list&quot;, li for &quot;list item&quot;)&lt;/li&gt;
+            &lt;li&gt;Hyperlinks (a for &quot;anchor&quot;)&lt;/li&gt;
+            &lt;li&gt;Images&lt;/li&gt;
+        &lt;/ul&gt;
+    
+        &lt;p&gt;Click &lt;a href=&quot;my-message.txt&quot;&gt;here&lt;/a&gt; for a cool message.&lt;/p&gt;
+    
+        &lt;p&gt;Here is a cool picture:&lt;/p&gt;
+        &lt;img src=&quot;my-picture.png&quot; /&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+                </pre>
+                This does the following:
+                <ul>
+                    <li>Puts all of the content inside a "div" container, and gives it an ID called "container".</li>
+                    <li>Tells the page to look for a stylesheet called "my-stylesheet.css".</li>
+                </ul>
+            </li>
+            <li>Create a new file in the same folder called "my-stylesheet.css" with the following content:</li>
+            <pre>
+body {
+    background-color: #ddd;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+#container {
+    background-color: #fff;
+    width: 50%;
+    margin: auto;
+    border-radius: 1em;
+    padding: 1em;
+}
+
+h1 {
+    text-align: center;
+}
+
+img {
+    object-fit: contain;
+    max-width: 75%;
+}
+
+li {
+    margin: 0.5em 0 0 0.5em
+}
+            </pre>
+        </ol>
+
+        <p>Go <a href="example/example-page-2.html">here</a> to see the finished page.</p>
+		
+
+		<table class="bottom-links">
+			<tr>
+				<td><a href="configuration.html">Previous: Configuration</a></td>
+                <td><a href="index.html">Index</a></td>
+				<td><a href="domain-name.html">Next: Acquiring a domain name</a></td>
+			</tr>
+		</table>
+	</div>
+
+
+
+</body>
+</html>

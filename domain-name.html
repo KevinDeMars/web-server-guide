@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css" />
+    <title>Acquiring a domain name</title>
+</head>
+<body>
+    <div id="container">
+        <h1>Acquiring a domain name</h1>
+        <p>A domain name is the address you type in in your web browser (e.g. example.com.) To get one for your server, you need to have a 
+            domain registrar assign you one. One way to do this is through <a href="domains.google.com">Google Domains</a>.
+        </p>
+
+        <p>Search for a domain name you want for your website. The ideal name is short, easy to remember, is comprised
+            of correctly-spelled words or names, and doesn't have a sketchy-sounding ending like ".xyz". Many domain names are cheap ($12 per year is common),
+            but you may have to compromise to find one that is both available and cheap.</p>
+
+        <p>Once you purchase a domain name, you need to ask the registrar to make it "point to" your website. This is done using an "A Resource Record", which
+            maps your domain name to an IPv4 address. I recommend creating two mappings; one for just your domain name (example.com) and one with "www" in front of it.
+        </p>
+
+        <h2>Procedure</h2>
+        <ol>
+            <li>Determine your router's public IP address by going <a href="https://www.whatismyip.com/">here.</a></li>
+            <li>Login to your domain registrar's website and create a new resource record.</li>
+            <li>Leave the part in front of your domain name blank. Set the type to "A" and the data to your public IP address.</li>
+            <li>Repeat the previous steps with another resource record with "www" in front of it.</li>
+            <li>The records should look something like this:
+                <a href="img/rr.png"><img src="img/rr.png" /></a>
+            </li>
+        </ol>
+
+        <table class="bottom-links">
+			<tr>
+				<td><a href="content.html">Previous: Putting content on the server</a></td>
+                <td><a href="index.html">Index</a></td>
+				<td></td>
+			</tr>
+		</table>
+    </div>
+</body>
+</html>

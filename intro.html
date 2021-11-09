@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Introduction</title>
+	<link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+	<div id="container">
+		<h1>Introduction</h1>
+		<h2>Goal of this guide</h2>
+		<p>This guide is designed for beginners who are interested in the idea of running a web server but don't really know anything about them. It it written for 
+			the Apache web server on a Windows operating system, although most of the steps will be very similar across operating systems and web servers.
+		</p>
+		<p>After finishing this guide, you will be able to run a server from your computer that can either run a website, or host whatever arbitrary files you want
+			so that anybody can download them.</p>
+		<p>The required steps will let you set up the server for free so that people can go to your website by typing in your IP address in their browser. (e.g. http://93.184.216.34) There are
+			optional steps that guide you towards acquiring a domain name (cheap, but not free) so people can type in your website's URL in their browser.
+		</p>
+
+		<h2>What is a web server?</h2>
+		<p>The answer to this question is more nebulous than you might expect. A web server is anything that listens for HTTP requests and responds with an HTTP response.</p>
+		<p>The Apache Software Foundation describes two main categories of web servers:</p>
+		<p>"Web site content can take many different forms, but may be broadly divided into static and dynamic content. Static content is things like HTML files, image files, CSS files,
+			 and other files that reside in the filesystem... Dynamic content is anything that is generated at request time, and may change from one request to another. 
+			 There are numerous ways that dynamic content may be generated. Various handlers are available to generate content. CGI programs may be written to generate content for your site."
+		</p>
+		
+		<p>There are several ways it decide what the response is. Here are a few:</p>
+
+		<ul>
+			<li>
+				<h4>Static files</h4>
+				<p>What we will use. When the server receives a request, it finds the appropriate file and sends the contents of that file as the response.</p>
+			</li>
+			<li> 
+				<h4>Templating engine</h4>
+				<p>Uses a file that contains placeholders. When you request a file, it uses various sources of information to fill in the template, and then it sends you the completed file in response.</p>
+			</li>
+			<li>
+				<h4>Programmatically-defined</h4>
+				<p>The web server contains code that gets run every time it receives a request. That code somehow generates a response, which it sends to the requestor.</p>
+			</li>
+		</ul>
+
+		<p>This guide will focus on hosting static files, where each page you can view on your website corresponds to an actual file stored on the web server. But there is nothing forcing the web
+			server to send a specific file or even the same thing every time in response to a request. Many web servers exist that host dynamic content.</p>
+
+		<p>How does the server send a response to a given request? To answer this, it is necessary to take a brief look at a few concepts:</p>
+	
+		<h3>HTTP</h3>
+		<p>HTTP is a simple (in concept) text-based protocol. It stands for Hypertext Transfer Protocol, and is used by our web server as the standard format for requests and responses.</p>
+		<p>The main goal of HTTP is to transfer hypertext (hence the name). One such hypertext is HTML, which will be discussed shortly. However, it can be used to transfer anything,
+			including arbitrary binary files.
+		</p>
+	
+		<p>A simple HTTP request to "example.com/" might look like this:</p>
+		<pre>
+GET / HTTP/1.1
+Host: example.com
+(blank line)
+		</pre>
+		<p>The first line specifies the method (GET), the resource (which page to get, "/"), and the version of HTTP you're using. The resource is relative to the website's URL. For example, "/" in this case refers to "example.com/". If you wanted to get "example.com/foo/bar", you would send "GET /foo/bar". </p>
+		<p>In response to this request, the server at example.com will send a response:</p>
+		<pre>
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=UTF-8
+Content-Length: 1256
+(Other headers omitted)
+
+&lt;!doctype html&gt;
+&lt;html&gt;
+&lt;head&gt;
+	&lt;title&gt;Example Domain&lt;/title&gt;
+	...
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div&gt;
+	&lt;h1&gt;Example Domain&lt;/h1&gt;
+	&lt;p&gt;This domain is for use in illustrative examples in documents. You may use this
+	domain in literature without prior coordination or asking for permission.&lt;/p&gt;
+	&lt;p&gt;&lt;a href="https://www.iana.org/domains/example"&gt;More information...&lt;/a&gt;&lt;/p&gt;
+&lt;/div>
+&lt;/body&gt;
+&lt;/html&gt;
+		</pre>
+		<p>The actual data starting with &lt;!doctype html&gt; is what gets displayed on your browser. The stuff before that is the HTTP header, which is data relating to how the actual data is transferred.</p>
+	
+		<h3>HTML</h3>
+		<p>HTML stands for Hypertext Markup Language, and is used to tell what content is on each page. It will be discussed in more detail in a later section. </p>
+	
+		<p>This guide is written in HTML. You can view the HTML yourself within your browser, likely by right-clicking the page and selecting "View Page Source".</p>
+
+		<h3>Routing, IP addresses, and port forwarding</h3>
+		<p>A router allows your network (your computers which are all "next to" each other) to talk to other networks. When your computer wants to send a request to another network, it sends the
+			request to your router, and your router forwards the request towards the destination.
+		</p>
+
+		<p>An IP address identifies a specific network interface (e.g. WiFi, Ethernet) on a specific computer. It is just a number. For convenience we split it into four numbers, each between 0 and 255, so it looks something like: 192.168.1.1.
+			There are routable IP addresses and private IP addresses. Your router likely has a single
+			routable IP address in addition to a private IP address, and everything else in your network likely has no routable address and one or more private IP addresses starting with 192.168.
+		</p>
+		<p>Say your computer has a private address of 192.168.1.5. You send a request to google.com. Somehow (not important for this guide) this gets converted to one of Google's IP addresses (e.g. 142.250.72.14)
+			The request will be handled as follows:
+		</p>
+		<ol>
+			<li>Your computer (192.168.1.5) sends the request to your router's private IP address (192.168.1.1)</li>
+			<li>Your router uses its routable IP address (1.2.3.4) to send the message to Google's routable IP address (142.250.72.14).
+				 Google doesn't know about your computer. It only knows about your router, and its single routable IP address.</li>
+			<li>Google sends a reply to your router (1.2.3.4).</li>
+			<li>Your router figures out that it should send the reply to your computer's private IP address, 192.168.1.5. Since your computer made the initial request, the router knows
+				that it should send the reply to the same computer.
+			</li>
+		</ol>
+
+		<p>But what if you're running a web server on your computer? Nobody on the internet knows about your computer; they only know your router's routable address of 1.2.3.4. So, they send it to 
+			your router. This is what happens if you don't configure anything:
+		</p>
+		<ol>
+			<li>Someone else (5.6.7.8) sends a request to your router (1.2.3.4).</li>
+			<li>Your router doesn't know what to do with it. How is it supposed to know that your computer is running a web server?</li>
+			<li>Your router throws away the packet.</li>
+		</ol>
+
+		<p>We fix this with what is called port forwarding. It tells the router that if it receives a request going to port 80 (used by HTTP), that it should give the
+			request to your computer instead of throwing it away. This is covered in the "Configuration" section.
+		</p>
+
+		<!--<h3>Protocol stack</h3>
+		<p>At this point, you may be confused by all the protocols getting thrown around. I've mentioned HTTP and IP, and you may have heard of TCP. Which one gets used?</p>
+		<p>All of them. They each stack on top of each other. </p>
+		<ul>
+			<li>The bottom layer (that we care about for this guide) is the IP (internet protocol) layer. It gives its "best effort" to deliver data across the internet.</li>
+			<li>The middle layer is TCP (transmission control protocol). It uses the unreliable services of the internet protocol to reliably deliver a stream of data.</li>
+			<li>The top layer is HTTP. This uses TCP underneath, and it deals with things specific to web servers (e.g. it defines the format of the HTTP header shown above).</li>
+		</ul>-->
+
+		<h2>Security Concerns</h2>
+		<p>Since we're just using static web pages, there is a greatly reduced security risk. However, there are still some security concerns:</p>
+		<ul>
+			<li>If you don't keep your web server updated, attackers can attack the web server itself. Vulnerabilities are regularly found and
+				fixed in web servers, so keeping your software up to date is important. Franklin (2001) notes that web server attacks are one of three
+				most common attacking techniques, and it works as follows: "[the attacker sends] HTTP requests to the Web server... the communication will
+				look legitimate to the firewall. When the request arrives at the Web server, it is serviced normally. However, due to a bug in the server 
+				the specific request exploits that vulnerability." (p. 31-32)
+			</li>
+			<li>Attackers will actively scan your server for exploits. I ran an plain, completely unknown server for my personal use, and this was a daily occurrence. Franklin (2001) 
+				gives an example: "An intruder will start his attempts by scanning the TCP/IP ports looking for Internet servers listening to ports. For example,
+				the IIS Web server package includes an FTP server that listens on port 21." (p. 33)
+			</li>
+			<li>Everything you put on your web server is public. People can and will scan through it for anything that they might be able to use for an attack (passwords, configuration files,
+				default admin pages, etc.)
+			</li>
+			<li>Configuring the server is somewhat complicated and can leave you exposed if you do it incorrectly.</li>
+		</ul>
+
+		<table class="bottom-links">
+			<tr>
+				<td></td>
+				<td><a href="index.html">Index</a></td>
+				<td><a href="installation.html">Next: Installation</a></td>
+			</tr>
+		</table>
+	</div>
+
+
+
+</body>
+</html>

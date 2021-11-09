@@ -1,0 +1,10 @@
+URL
+IP address
+HTTP
+HTML
+Port
+Port forwarding
+Router
+Network
+Domain
+Domain registrar

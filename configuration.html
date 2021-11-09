@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration</title>
+    <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+    <div id="container">
+        <h1>Configuration</h1>
+        <p>Open the file "C:\Apache24\conf\httpd.conf" with a text editor.</p>
+        <p>Lines starting with a "#" are comments, which means they don't do anything; they just help explain. You will notice that most of the lines are comments,
+            because web servers are complicated and we really need them to figure out what's going on.
+        </p>
+
+        <h2>Basic options</h2>
+        <p>If you follow this guide and leave everything as the default, you won't need to change the following options, but they are important:</p>
+        <dl>
+            <dt>ServerRoot &lt;file path&gt;</dt>
+            <dd>Location where you put the server folder after extracting. If you moved the folder to "C:\Apache24" as specified in the installation section, you don't need to change this.</dd>
+            <dt>Listen &lt;port number&gt;</dt>
+            <dd>Tells Apache to listen for web traffic on the given port. You should, most of the time, leave it as the default of 80. If you
+                change it, people will need to specify the port number when they visit your website (e.g. "example.com:12345")
+            </dd>
+            <dt>DocumentRoot &lt;file path&gt;</dt>
+            <dd>This is the where the files are that people can view by connecting to the server. For example, if the DocumentRoot is "C:\Stuff", and you have the domain name
+                of "example.com", then people can view the file at "C:\Stuff\myFile.html" by entering "example.com/myFile.html".
+                <br/>
+                By default, this is "C:\Apache24\htdocs".
+            </dd>
+        </dl>
+
+        <p>The following option is <b>not set by default</b>, which is why we got the warning in the "Installation" step. It is currently commented out with a "#". Remove the "#".</p>
+        <dl>
+            <dt>ServerName &lt;address&gt;:&lt;port number&gt;</dt>
+        </dl>
+        <p>Obtaining a readable address like "example.com" will be discussed in a later section. For now, set it to your IP address with a port of 80. For example, my setting is "ServerName 67.198.92.243:80".</p>
+        <p>To find your IP address, the easiest way is to go to a website that tells it to you, such as <a href="https://www.whatismyip.com/">this one</a>.</p>
+
+        <h2>Notice: About Security</h2>
+        <p>You should always have security in mind when configuring your web server. By default, everything inside your DocumentRoot is publicly accessible to everyone on
+            the internet. Sensitive information (configuration files, passwords, etc.) should not be in the DocumentRoot. If you do need to add sensitive information,
+            configure it so that it is not public.
+        </p>
+        <p>Many security vulnerabilities are caused by incorrect configuration. The config file gives a "friendly" reminder:</p>
+        <pre>
+# Do NOT simply read the instructions in here without understanding
+# what they do.  They're here only as hints or reminders.  If you are unsure
+# consult the online docs. You have been warned.  
+        </pre>
+        <p>The same applies to this guide. If you don't understand how to configure something, do more research. Don't just guess.</p>
+
+        <h2>Access Control</h2>
+        <p>Access control is done using a series of scopes, defined by a &lt;Directory&gt; tag (other similar tags exist). Inside the tag is a series of configuration values that apply to everything in that folder (even subfolders).</p>
+        <p>If multiple scopes apply, the more specific one overrides the less specific one. For example, if you grant access to "C:\folder1\aaa", but deny access to "C:\folder1\aaa\bbb", then
+            everyone will have access to "folder1\aaa" but won't have access to "folder1\aaa\bbb".
+        </p>
+        <p>By default, there are two entries. One that blocks access to everything, and one that grants access to everything inside the htdocs folder, which looks like this:</p>
+        <pre>
+&lt;Directory "${SRVROOT}/htdocs"&gt;
+    #
+    # Possible values for the Options directive are "None", "All",
+    # or any combination of:
+    #   Indexes Includes FollowSymLinks SymLinksifOwnerMatch ExecCGI MultiViews
+    #
+    # Note that "MultiViews" must be named *explicitly* --- "Options All"
+    # doesn't give it to you.
+    #
+    # The Options directive is both complicated and important.  Please see
+    # http://httpd.apache.org/docs/2.4/mod/core.html#options
+    # for more information.
+    #
+    Options Indexes FollowSymLinks
+
+    #
+    # AllowOverride controls what directives may be placed in .htaccess files.
+    # It can be "All", "None", or any combination of the keywords:
+    #   AllowOverride FileInfo AuthConfig Limit
+    #
+    AllowOverride None
+
+    #
+    # Controls who can get stuff from this server.
+    #
+    Require all granted
+&lt;/Directory&gt;
+        </pre>
+        <p><b>Caution:</b> "Indexes" is enabled by default. This means that people can see a listing of all the files/folders within the specified folder.
+            Even though everything in your DocumentRoot should be treated as public unless manually changed, this might not be what you want:
+        </p>
+        <img src="img/indexes.png" />
+
+        <p>Remove "Indexes" if you don't need an automatic file listing.</p>
+
+        <h2>Port forwarding</h2>
+        <p>See the introduction for a short explanation of port forwarding.</p>
+        <p>This process is a bit tricky because the exact steps depend on what kind of router you have. The general process will look something like this:</p>
+        
+        <ol>
+            <li>Find your router's private IP address and your computer's private IP address:</li>
+            <ol>
+                <li>Open the command prompt.</li>
+                <li>Enter "ipconfig".</li>
+                <li>You will see several internet adapters listed. Look for one that has a non-blank "Default Gateway". It will very likely be 192.168.0.1 or 192.168.1.1.</li>
+                <li>Your computer's IP address will be listed under the same internet adapter, labelled "IPv4 address".</li>
+            </ol>
+            <li>In your browser, enter http://&lt;router's IP address&gt;</li>
+            <li>You should see your router's admin login page. Log in with your admin credentials. If you don't know it, try looking up "&lt;Your router's brand name&gt; router default admin login".</li>
+            <li>Go to Firewall settings.</li>
+            <img src="img/firewall-settings.png" />
+            <li>Go to "Port forwarding". Mine is labelled "Virtual servers / Port forwarding".</li>
+            <img src="img/port-forwarding-page.png" />
+            <li>Forward incoming TCP traffic that is bound to your router's port 80, to your computer's port 80. Follow the below image (but replace the IP address with yours).</li>
+            <img src="img/http-forward.png" />
+            <li>Repeat for port 443, for HTTPS.</li>
+            <li>Your table should now have these two entries:</li>
+            <img src="img/forwarding-table.png" />
+        </ol>
+
+        <h2>Check for errors</h2>
+        <ol>
+            <li>Run the server through the Command Prompt one more time (so you can see the errors on the console). See the "Installation" section.</li>
+            <li>If you set the ServerName directive, you should no longer see the warning you got before. In fact, nothing should be printed to the console.</li>
+            <li>Test that you can access your server in your web browser using your external IP address (e.g. 67.198.92.243).</li>
+            <li>Now, anyone should be able to connect to your web server if they have your IP address. Have a friend (who isn't in the same building) try to connect
+                to test if the port forwarding worked correctly.</li>
+        </ol>
+        
+        <table class="bottom-links">
+			<tr>
+				<td><a href="installation.html">Previous: Installation</a></td>
+                <td><a href="index.html">Index</a></td>
+				<td><a href="content.html">Next: Putting Content on the Server</a></td>
+			</tr>
+		</table>
+        
+
+    </div>
+</body>
+</html>
