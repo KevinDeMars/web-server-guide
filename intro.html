@@ -56,14 +56,13 @@
 			including arbitrary binary files.
 		</p>
 	
-		<p>A simple HTTP request to "example.com/" might look like this:</p>
+		<p>A simple HTTP request to "example.com/hello" might look like this:</p>
 		<pre>
-GET / HTTP/1.1
+GET /hello HTTP/1.1
 Host: example.com
-(blank line)
 		</pre>
-		<p>The first line specifies the method (GET), the resource (which page to get, "/"), and the version of HTTP you're using. The resource is relative to the website's URL. For example, "/" in this case refers to "example.com/". If you wanted to get "example.com/foo/bar", you would send "GET /foo/bar". </p>
-		<p>In response to this request, the server at example.com will send a response:</p>
+		<p>The first line specifies the method (GET), the resource (which page to get, "/hello"), and the version of HTTP you're using. The resource is relative to the website's URL, meaning if you want "example.com/foo/bar", you would send "GET /foo/bar". </p>
+		<p>In response to this request, the server at example.com will send a response. It contains a header with various kinds of information, followed by the actual data you requested:</p>
 		<pre>
 HTTP/1.1 200 OK
 Content-Type: text/html; charset=UTF-8
@@ -86,56 +85,43 @@ Content-Length: 1256
 &lt;/body&gt;
 &lt;/html&gt;
 		</pre>
-		<p>The actual data starting with &lt;!doctype html&gt; is what gets displayed on your browser. The stuff before that is the HTTP header, which is data relating to how the actual data is transferred.</p>
 	
 		<h3>HTML</h3>
-		<p>HTML stands for Hypertext Markup Language, and is used to tell what content is on each page. It will be discussed in more detail in a later section. </p>
+		<p>HTML stands for Hypertext Markup Language, and is used to tell the structure and content of a web page.
+			It consists of text, plus tags around the text (such as &lt;p&gt;hello&lt;/p&gt;) It will be discussed in more detail in a later section. </p>
 	
 		<p>This guide is written in HTML. You can view the HTML yourself within your browser, likely by right-clicking the page and selecting "View Page Source".</p>
 
 		<h3>Routing, IP addresses, and port forwarding</h3>
-		<p>A router allows your network (your computers which are all "next to" each other) to talk to other networks. When your computer wants to send a request to another network, it sends the
+
+		<p>A network is essentially a bunch of computers that are "next to" each other, all connected to the same router.</p>
+		<p>Your router allows your network to talk to other networks. When your computer wants to send a request to another network, it sends the
 			request to your router, and your router forwards the request towards the destination.
 		</p>
 
-		<p>An IP address identifies a specific network interface (e.g. WiFi, Ethernet) on a specific computer. It is just a number. For convenience we split it into four numbers, each between 0 and 255, so it looks something like: 192.168.1.1.
-			There are routable IP addresses and private IP addresses. Your router likely has a single
-			routable IP address in addition to a private IP address, and everything else in your network likely has no routable address and one or more private IP addresses starting with 192.168.
-		</p>
-		<p>Say your computer has a private address of 192.168.1.5. You send a request to google.com. Somehow (not important for this guide) this gets converted to one of Google's IP addresses (e.g. 142.250.72.14)
-			The request will be handled as follows:
-		</p>
-		<ol>
-			<li>Your computer (192.168.1.5) sends the request to your router's private IP address (192.168.1.1)</li>
-			<li>Your router uses its routable IP address (1.2.3.4) to send the message to Google's routable IP address (142.250.72.14).
-				 Google doesn't know about your computer. It only knows about your router, and its single routable IP address.</li>
-			<li>Google sends a reply to your router (1.2.3.4).</li>
-			<li>Your router figures out that it should send the reply to your computer's private IP address, 192.168.1.5. Since your computer made the initial request, the router knows
-				that it should send the reply to the same computer.
-			</li>
-		</ol>
-
-		<p>But what if you're running a web server on your computer? Nobody on the internet knows about your computer; they only know your router's routable address of 1.2.3.4. So, they send it to 
-			your router. This is what happens if you don't configure anything:
-		</p>
-		<ol>
-			<li>Someone else (5.6.7.8) sends a request to your router (1.2.3.4).</li>
-			<li>Your router doesn't know what to do with it. How is it supposed to know that your computer is running a web server?</li>
-			<li>Your router throws away the packet.</li>
-		</ol>
-
-		<p>We fix this with what is called port forwarding. It tells the router that if it receives a request going to port 80 (used by HTTP), that it should give the
-			request to your computer instead of throwing it away. This is covered in the "Configuration" section.
+		<p>An IP address identifies a computer (actually, it's more specific; we'll ignore that). It is just a number. For convenience, we split it into four numbers, each between 0 and 255 (e.g. 192.168.1.1).</p>
+		<p>There are two types of IP addresses we care about:
+			<dl>
+				<dt>Private address</dt>
+				<dd>Used only inside your network. Every computer in your network has one. However, it is meaningless outside of your network, because the same private address
+					can be used in two different networks. The private addresses that you will see in your home network should start with 192.168.
+				</dd>
+				<dt>Routable (or public) address</dt>
+				<dd>Can be used outside your network. Usually, in home networks, only your router has a routable address. Routable addresses are unique worldwide.</dd>
+			</dl>
 		</p>
 
-		<!--<h3>Protocol stack</h3>
-		<p>At this point, you may be confused by all the protocols getting thrown around. I've mentioned HTTP and IP, and you may have heard of TCP. Which one gets used?</p>
-		<p>All of them. They each stack on top of each other. </p>
-		<ul>
-			<li>The bottom layer (that we care about for this guide) is the IP (internet protocol) layer. It gives its "best effort" to deliver data across the internet.</li>
-			<li>The middle layer is TCP (transmission control protocol). It uses the unreliable services of the internet protocol to reliably deliver a stream of data.</li>
-			<li>The top layer is HTTP. This uses TCP underneath, and it deals with things specific to web servers (e.g. it defines the format of the HTTP header shown above).</li>
-		</ul>-->
+		<p>In addition to having a destination IP address, internet traffic is associated with a port. (The reality is that it's more complicated and ports are associated with the transport layer of the protocol stack, but we'll ignore this.)
+			A port is kind of like a TV channel number. Your TV gets multiple channels at once, and uses the channel number to tell which show to show you.
+			Ports allow one computer connect to multiple things at a time. You could run a web server that handles requests on port 80 and and email server that handles requests on a different port
+			at the same time, for example. Without ports, your computer can't tell if a given piece of data should go to the web server or the email server.
+		</p>
+
+		<p>People will connect to your website using a routable/public address. This is a problem since your computer doesn't have one; only your router does. And your router doesn't care
+			about HTTP requests, so it normally throws them away. So, you must tell your router that if it receives an HTTP request, it should give it to your computer instead of throwing
+			it away. This is done using "port forwarding". HTTP uses port 80 (and HTTPS, port 443) so this is done by telling your router to give your computer data heading for port 80 or 443.
+			The process is covered in the "Configuration" section.
+		</p>
 
 		<h2>Security Concerns</h2>
 		<p>Since we're just using static web pages, there is a greatly reduced security risk. However, there are still some security concerns:</p>

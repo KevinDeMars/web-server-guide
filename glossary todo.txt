@@ -1,3 +1,4 @@
+Apache
 URL
 IP address
 HTTP
@@ -5,6 +6,12 @@ HTML
 Port
 Port forwarding
 Router
+Routable address
+Public address
+Private address
 Network
-Domain
+Domain name
 Domain registrar
+Server root
+Document root
+htdocs
